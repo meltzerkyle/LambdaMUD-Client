@@ -36,7 +36,7 @@ class Login extends Component {
         localStorage.setItem("token", response.data.key);
         this.props.history.push("/game");
       })
-      .catch(error => console.error("Error:", error));
+      .catch(error => alert(error.response.data.error));
     this.setState({
       username: "",
       password: ""
@@ -71,7 +71,9 @@ class Login extends Component {
                   />
                 </FormGroup>
                 <FormGroup>
-                <Button color="primary" type="submit">Login</Button>    
+                  <Button color="primary" type="submit">
+                    Login
+                  </Button>
                 </FormGroup>
               </Form>
             </CardBody>
