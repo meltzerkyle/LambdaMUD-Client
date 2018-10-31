@@ -17,6 +17,7 @@ class App extends Component {
     return (
       <Container className="App" fluid={true} >
         <Route path="/register" render={props => <Register {...props} />} />
+        <Route path="/login" render={props => <Login {...props} />} />
       </Container>
     );
   }
