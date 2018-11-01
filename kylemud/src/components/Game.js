@@ -98,9 +98,10 @@ class Game extends Component {
     if (commands.length >= 2) {
       console.log(commands[0]);
     }
-    let command = {
-      message: this.state.command
-    };
+    // let command = {
+    //   message: this.state.command
+    // };
+    let command;
     if (commands[0] === "move") {
       command = {
         direction: commands[1]
@@ -123,21 +124,26 @@ class Game extends Component {
         })
         .catch(error => alert("Please enter a valid command!"));
     }
-    axios
-      .post(
-        `https://kylemud.herokuapp.com/api/adv/${commands[0]}/`,
-        command,
-        header
-      )
-      .then(response => {
-        console.log(response);
-        const newMessage = response.data.message;
-        const messages = this.state.messages.slice();
-        messages.push(newMessage);
-        this.setState({ messages });
-      })
-      .catch(error => alert("Please enter a valid command!"));
-    //   .catch(error => alert(error.response.data.error));
+    if (commands[0] === "say") {
+      command = {
+        message: this.state.command.split(" ").splice(1).join(" ")
+      };
+      axios
+        .post(
+          `https://kylemud.herokuapp.com/api/adv/${commands[0]}/`,
+          command,
+          header
+        )
+        .then(response => {
+          console.log(response);
+          const newMessage = response.data.message;
+          const messages = this.state.messages.slice();
+          messages.push(newMessage);
+          this.setState({ messages });
+        })
+        .catch(error => alert("Please enter a valid command!"));
+      //   .catch(error => alert(error.response.data.error));
+    }
   };
   render() {
     return (
@@ -147,7 +153,10 @@ class Game extends Component {
             <Row className="justify-content-center">
               <Col sm="8">
                 <div style={{ minHeight: "8em" }}>
-                  <div style={{ marginTop: "2em" }}>WELCOME TO R'LYEH</div>
+                  <div style={{ marginTop: "2em" }}>
+                    {" "}
+                    <h4 style={{ fontWeight: 900 }}>WELCOME TO R'LYEH</h4>
+                  </div>
                   {this.state.roomTitle}. {this.state.roomDescription}
                 </div>
                 <Col>
@@ -172,12 +181,15 @@ class Game extends Component {
                     </CardBody>
                   </Card>
                 </Col>
-                <Form onSubmit={this.handleCommand}>
+                <Form
+                  style={{ marginTop: "2em", marginBottom: "2em" }}
+                  onSubmit={this.handleCommand}
+                >
                   <FormGroup>
                     <Label>COMMAND</Label>
                     <Input
                       onChange={this.handleInputChange}
-                      placeholder="Enter command"
+                      placeholder="Enter command(say <message>, move <n, s, e, w>)"
                       value={this.state.command}
                       name="command"
                       type="text"
@@ -188,8 +200,9 @@ class Game extends Component {
               <Col sm="4">
                 <div style={{ minHeight: "8em" }}>
                   <div style={{ marginTop: "2em" }}>
-                    Your name is {this.state.name}. You don't remember how you
-                    got here...
+                    Your name is{" "}
+                    <b style={{ fontWeight: 900 }}>{this.state.name}</b>. You
+                    don't remember how you got here...
                   </div>
                 </div>
                 <div>
