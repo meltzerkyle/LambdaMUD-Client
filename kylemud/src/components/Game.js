@@ -114,19 +114,26 @@ class Game extends Component {
         )
         .then(response => {
           console.log(response);
-          this.setState({
-            players: response.data.players,
-            name: response.data.name,
-            roomTitle: response.data.title,
-            roomDescription: response.data.description,
-            loadedSuccessfully: true
-          });
+          if (response.data.error_msg) {
+            alert(response.data.error_msg);
+          } else {
+            this.setState({
+              players: response.data.players,
+              name: response.data.name,
+              roomTitle: response.data.title,
+              roomDescription: response.data.description,
+              loadedSuccessfully: true
+            });
+          }
         })
         .catch(error => alert("Please enter a valid command!"));
     }
     if (commands[0] === "say") {
       command = {
-        message: this.state.command.split(" ").splice(1).join(" ")
+        message: this.state.command
+          .split(" ")
+          .splice(1)
+          .join(" ")
       };
       axios
         .post(
