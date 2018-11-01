@@ -143,8 +143,13 @@ class Game extends Component {
                   {this.state.roomTitle}. {this.state.roomDescription}
                 </div>
                 <Col>
-                  <Card style={{ minHeight: "10em" }}>
-                    <CardBody>
+                  <Card
+                    style={{
+                      minHeight: "20em",
+                      overflow: "scroll"
+                    }}
+                  >
+                    <CardBody style={{ backgroundColor: "lightGray", opacity: "0.6" }}>
                       <CardTitle>MESSAGES</CardTitle>
                       <div className="text-muted">{this.state.message}</div>
                     </CardBody>
@@ -164,7 +169,7 @@ class Game extends Component {
                 </Form>
               </Col>
               <Col sm="4">
-                <div>
+                <div style={{ minHeight: "10em" }}>
                   Your name is {this.state.name}. You don't remember how you got
                   here...
                 </div>
