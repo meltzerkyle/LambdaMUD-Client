@@ -21,7 +21,8 @@ class Game extends Component {
       players: [],
       name: "",
       roomTitle: "",
-      roomDescription: ""
+      roomDescription: "",
+      loadedSuccessfully: false
     };
   }
   componentDidMount() {
@@ -39,7 +40,8 @@ class Game extends Component {
           players: response.data.players,
           name: response.data.name,
           roomTitle: response.data.title,
-          roomDescription: response.data.description
+          roomDescription: response.data.description,
+          loadedSuccessfully: true
         });
       })
       .catch(error => alert(error.response.data.error));
@@ -56,25 +58,35 @@ class Game extends Component {
       alert(JSON.stringify(data));
     });
 
-    console.log('test string')
+    console.log("test string");
   }
   render() {
     return (
       <div>
-        <div>GAMEWORLD</div>
-        <div>
-          You, {this.state.name}, are in the {this.state.roomTitle}.{" "}
-          {this.state.roomDescription}
-        </div>
-        <div>
-          Other players in the room:
-          {this.state.players.map(player => (
-            <div>{player}</div>
-          ))}
-        </div>
+        {this.state.loadedSuccessfully === true ? (
+          <div>
+            <div>GAMEWORLD</div>
+            <div>
+              You, {this.state.name}, are in the {this.state.roomTitle}.{" "}
+              {this.state.roomDescription}
+            </div>
+            <div>
+              Other players in the room:
+              {this.state.players.map(player => (
+                <div>{player}</div>
+              ))}
+            </div>
+          </div>
+        ) : null}
       </div>
     );
   }
 }
+
+// {
+//   this.state.errorMessage !== null ? (
+//     <h3 style={{ color: "red" }}>{this.state.errorMessage}</h3>
+//   ) : null;
+// }
 
 export default Game;
