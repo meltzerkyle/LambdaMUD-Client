@@ -22,7 +22,9 @@ class Game extends Component {
       name: "",
       roomTitle: "",
       roomDescription: "",
-      loadedSuccessfully: false
+      loadedSuccessfully: false,
+      message: "",
+      command: ""
     };
   }
   componentDidMount() {
@@ -54,12 +56,35 @@ class Game extends Component {
 
     let channel = pusher.subscribe(`p-channel-${id}`);
 
-    channel.bind("my-event", function(data) {
-      alert(JSON.stringify(data));
-    });
-
-    console.log("test string");
+    channel.bind(
+      "broadcast",
+      function(data) {
+        console.log(data.message);
+        //   alert(JSON.stringify(data));
+        this.setState({ message: data.message });
+      }.bind(this)
+    );
   }
+  handleInputChange = event => {
+    this.setState({ [event.target.name]: event.target.value });
+  };
+  handleCommand = event => {
+    event.preventDefault();
+    const header = {
+        headers: {
+          authorization: `TOKEN ${localStorage.getItem("token")}`
+        }
+      };
+    const command = {
+      message: this.state.command
+    };
+    axios
+      .post("https://kylemud.herokuapp.com/api/adv/say/", command, header)
+      .then(response => {
+        this.setState({ message: response.data.message });
+      })
+      .catch(error => alert(error.response.data.error));
+  };
   render() {
     return (
       <div>
@@ -73,11 +98,26 @@ class Game extends Component {
             <div>
               Other players in the room:
               {this.state.players.map(player => (
-                <div>{player}</div>
+                <div key={player}>{player}</div>
               ))}
             </div>
           </div>
-        ) : null}
+        ) : (
+          <div>GAMEWORLD LOADING...</div>
+        )}
+        <Form onSubmit={this.handleCommand}>
+          <FormGroup>
+            <Label>COMMAND</Label>
+            <Input
+              onChange={this.handleInputChange}
+              placeholder="Enter command"
+              value={this.state.command}
+              name="command"
+              type="text"
+            />
+          </FormGroup>
+        </Form>
+        <Card>{this.state.message}</Card>
       </div>
     );
   }

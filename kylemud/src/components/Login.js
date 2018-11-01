@@ -34,6 +34,7 @@ class Login extends Component {
       .post("https://kylemud.herokuapp.com/api/login", user)
       .then(response => {
         localStorage.setItem("token", response.data.key);
+        console.log(response.data.key)
         this.props.history.push("/game");
       })
       .catch(error => alert(error.response.data.error));
