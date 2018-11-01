@@ -59,9 +59,12 @@ class Game extends Component {
     channel.bind(
       "broadcast",
       function(data) {
-        console.log(data.message);
+        console.log(data);
         //   alert(JSON.stringify(data));
-        this.setState({ message: data.message });
+        this.setState({
+          message: data.message,
+          players: data.players
+        });
       }.bind(this)
     );
   }
@@ -71,10 +74,10 @@ class Game extends Component {
   handleCommand = event => {
     event.preventDefault();
     const header = {
-        headers: {
-          authorization: `TOKEN ${localStorage.getItem("token")}`
-        }
-      };
+      headers: {
+        authorization: `TOKEN ${localStorage.getItem("token")}`
+      }
+    };
     const command = {
       message: this.state.command
     };
