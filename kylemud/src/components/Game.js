@@ -78,15 +78,48 @@ class Game extends Component {
         authorization: `TOKEN ${localStorage.getItem("token")}`
       }
     };
-    const command = {
+    let commands = this.state.command.split(" ");
+    console.log(commands);
+    if (commands.length >= 2) {
+      console.log(commands[0]);
+    }
+    let command = {
       message: this.state.command
     };
+    if (commands[0] === "move") {
+      command = {
+        direction: commands[1]
+      };
+      axios
+        .post(
+          `https://kylemud.herokuapp.com/api/adv/${commands[0]}/`,
+          command,
+          header
+        )
+        .then(response => {
+          console.log(response);
+          this.setState({
+            players: response.data.players,
+            name: response.data.name,
+            roomTitle: response.data.title,
+            roomDescription: response.data.description,
+            loadedSuccessfully: true
+          });
+        })
+        .catch(error => alert("Please enter a valid command!"));
+    }
     axios
-      .post("https://kylemud.herokuapp.com/api/adv/say/", command, header)
+      .post(
+        `https://kylemud.herokuapp.com/api/adv/${commands[0]}/`,
+        command,
+        header
+      )
       .then(response => {
+        console.log(response);
         this.setState({ message: response.data.message });
       })
-      .catch(error => alert(error.response.data.error));
+      .catch(error => alert("Please enter a valid command!"));
+    //   .catch(error => alert(error.response.data.error));
   };
   render() {
     return (
