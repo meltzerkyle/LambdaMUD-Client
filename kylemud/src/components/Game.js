@@ -5,6 +5,7 @@ import {
   Card,
   CardBody,
   CardTitle,
+  CardText,
   Form,
   FormGroup,
   Label,
@@ -13,6 +14,15 @@ import {
 } from "reactstrap";
 import axios from "axios";
 import Pusher from "pusher-js";
+import classNames from "classnames";
+
+import "./Game.css";
+
+const gameClasses = classNames({
+  game: true,
+  "justify-content-center": true
+  //   "align-items-center": true
+});
 
 class Game extends Component {
   constructor(props) {
@@ -123,38 +133,54 @@ class Game extends Component {
   };
   render() {
     return (
-      <div>
+      <Row className={gameClasses}>
         {this.state.loadedSuccessfully === true ? (
-          <div>
-            <div>GAMEWORLD</div>
-            <div>
-              You, {this.state.name}, are in the {this.state.roomTitle}.{" "}
-              {this.state.roomDescription}
-            </div>
-            <div>
-              Other players in the room:
-              {this.state.players.map(player => (
-                <div key={player}>{player}</div>
-              ))}
-            </div>
-          </div>
+          <Col sm="8">
+            <Row className="justify-content-center">
+              <Col sm="8">
+                <div style={{ minHeight: "10em" }}>
+                  <div>WELCOME TO R'LYEH</div>
+                  {this.state.roomTitle}. {this.state.roomDescription}
+                </div>
+                <Col>
+                  <Card style={{ minHeight: "10em" }}>
+                    <CardBody>
+                      <CardTitle>MESSAGES</CardTitle>
+                      <div className="text-muted">{this.state.message}</div>
+                    </CardBody>
+                  </Card>
+                </Col>
+                <Form onSubmit={this.handleCommand}>
+                  <FormGroup>
+                    <Label>COMMAND</Label>
+                    <Input
+                      onChange={this.handleInputChange}
+                      placeholder="Enter command"
+                      value={this.state.command}
+                      name="command"
+                      type="text"
+                    />
+                  </FormGroup>
+                </Form>
+              </Col>
+              <Col sm="4">
+                <div>
+                  Your name is {this.state.name}. You don't remember how you got
+                  here...
+                </div>
+                <div>
+                  Other players in the room:
+                  {this.state.players.map(player => (
+                    <div key={player}>{player}</div>
+                  ))}
+                </div>
+              </Col>
+            </Row>
+          </Col>
         ) : (
-          <div>GAMEWORLD LOADING...</div>
+          <Col>R'LYEH LOADING...</Col>
         )}
-        <Form onSubmit={this.handleCommand}>
-          <FormGroup>
-            <Label>COMMAND</Label>
-            <Input
-              onChange={this.handleInputChange}
-              placeholder="Enter command"
-              value={this.state.command}
-              name="command"
-              type="text"
-            />
-          </FormGroup>
-        </Form>
-        <Card>{this.state.message}</Card>
-      </div>
+      </Row>
     );
   }
 }
