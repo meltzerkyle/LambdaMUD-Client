@@ -33,7 +33,8 @@ class Game extends Component {
       roomTitle: "",
       roomDescription: "",
       loadedSuccessfully: false,
-      message: "",
+      //   message: "",
+      messages: [],
       command: ""
     };
   }
@@ -71,8 +72,12 @@ class Game extends Component {
       function(data) {
         console.log(data);
         //   alert(JSON.stringify(data));
+        const newMessage = data.message;
+        const messages = this.state.messages.slice();
+        messages.push(newMessage);
         this.setState({
-          message: data.message,
+          //   message: data.message,
+          messages,
           players: data.players
         });
       }.bind(this)
@@ -126,7 +131,10 @@ class Game extends Component {
       )
       .then(response => {
         console.log(response);
-        this.setState({ message: response.data.message });
+        const newMessage = response.data.message;
+        const messages = this.state.messages.slice();
+        messages.push(newMessage);
+        this.setState({ messages });
       })
       .catch(error => alert("Please enter a valid command!"));
     //   .catch(error => alert(error.response.data.error));
@@ -135,23 +143,32 @@ class Game extends Component {
     return (
       <Row className={gameClasses}>
         {this.state.loadedSuccessfully === true ? (
-          <Col sm="8">
+          <Col sm="10">
             <Row className="justify-content-center">
               <Col sm="8">
-                <div style={{ minHeight: "10em" }}>
-                  <div>WELCOME TO R'LYEH</div>
+                <div style={{ minHeight: "8em" }}>
+                  <div style={{ marginTop: "2em" }}>WELCOME TO R'LYEH</div>
                   {this.state.roomTitle}. {this.state.roomDescription}
                 </div>
                 <Col>
                   <Card
+                    className="message"
                     style={{
                       minHeight: "20em",
-                      overflow: "scroll"
+                      maxHeight: "20em",
+                      overflowY: "scroll",
+                      backgroundColor: "lightGray",
+                      color: "black",
+                      opacity: "0.6"
                     }}
                   >
-                    <CardBody style={{ backgroundColor: "lightGray", opacity: "0.6" }}>
+                    <CardBody>
                       <CardTitle>MESSAGES</CardTitle>
-                      <div className="text-muted">{this.state.message}</div>
+                      <div className="text-muted">
+                        {this.state.messages.map(message => (
+                          <div key={message}>{message}</div>
+                        ))}
+                      </div>
                     </CardBody>
                   </Card>
                 </Col>
@@ -169,9 +186,11 @@ class Game extends Component {
                 </Form>
               </Col>
               <Col sm="4">
-                <div style={{ minHeight: "10em" }}>
-                  Your name is {this.state.name}. You don't remember how you got
-                  here...
+                <div style={{ minHeight: "8em" }}>
+                  <div style={{ marginTop: "2em" }}>
+                    Your name is {this.state.name}. You don't remember how you
+                    got here...
+                  </div>
                 </div>
                 <div>
                   Other players in the room:
